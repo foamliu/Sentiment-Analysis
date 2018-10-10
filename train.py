@@ -30,6 +30,9 @@ def train(epoch, train_data, encoder, optimizer):
         input_variable = input_variable.to(device)
         lengths = lengths.to(device)
         target_variable = target_variable.to(device)
+        print('input_variable.size(): ' + str(input_variable.size()))
+        print('lengths.size(): ' + str(lengths.size()))
+        print('target_variable.size(): ' + str(target_variable.size()))
 
         # Forward pass through encoder
         encoder_outputs, encoder_hidden = encoder(input_variable, lengths)

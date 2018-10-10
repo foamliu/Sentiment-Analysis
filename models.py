@@ -16,6 +16,7 @@ class EncoderRNN(nn.Module):
 
     def forward(self, input_seq, input_lengths, hidden=None):
         print('input_seq.size(): ' + str(input_seq.size()))
+        print('input_lengths.size(): ' + str(input_lengths.size()))
         # Convert word indexes to embeddings
         embedded = self.embedding(input_seq)
         # Pack padded batch of sequences for RNN module
