@@ -4,9 +4,8 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Configure training/optimization
 learning_rate = 0.0001
-min_word_freq = 3
-print_every = 10
-chunk_size = 200
+print_every = 100
+chunk_size = 100
 num_labels = 20
 num_classes = 4  # number of sentimental types
 save_folder = 'models'

@@ -35,15 +35,15 @@ def train(epoch, train_data, encoder, optimizer):
         # print('target_variable.size(): ' + str(target_variable.size()))
 
         # Forward pass through encoder
-        encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
-        # print('encoder_outputs.size(): ' + str(encoder_outputs.size()))
+        outputs = encoder(input_variable, lengths)
+        # print('outputs.size(): ' + str(outputs.size()))
 
-        loss = criterion(encoder_outputs, target_variable)
+        loss = criterion(outputs, target_variable)
         loss.backward()
 
         optimizer.step()
 
-        acc = accuracy(encoder_outputs, target_variable)
+        acc = accuracy(outputs, target_variable)
         # print('acc: ' + str(acc))
 
         # Keep track of metrics
@@ -84,11 +84,11 @@ def valid(val_data, encoder):
             lengths = lengths.to(device)
             target_variable = target_variable.to(device)
 
-            encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
+            outputs = encoder(input_variable, lengths)
 
-            loss = criterion(encoder_outputs, target_variable)
+            loss = criterion(outputs, target_variable)
 
-            acc = accuracy(encoder_outputs, target_variable)
+            acc = accuracy(outputs, target_variable)
             # print('acc: ' + str(acc))
 
             # Keep track of metrics
@@ -128,7 +128,7 @@ def main():
     print('Building optimizers ...')
     optimizer = optim.Adam(encoder.parameters(), lr=learning_rate)
 
-    best_loss = 100000
+    best_acc = 0
     epochs_since_improvement = 0
 
     # Epochs
@@ -147,8 +147,8 @@ def main():
         print('\n * ACCURACY - {acc:.3f}, LOSS - {loss:.3f}\n'.format(acc=val_acc, loss=val_loss))
 
         # Check if there was an improvement
-        is_best = val_loss < best_loss
-        best_loss = max(best_loss, val_loss)
+        is_best = val_acc > best_acc
+        best_acc = max(best_acc, val_acc)
 
         if not is_best:
             epochs_since_improvement += 1
@@ -157,7 +157,7 @@ def main():
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, encoder, optimizer, val_loss, is_best)
+        save_checkpoint(epoch, encoder, optimizer, val_acc, is_best)
 
 
 if __name__ == '__main__':

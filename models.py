@@ -16,7 +16,7 @@ class EncoderRNN(nn.Module):
         #   because our input size is a word embedding with number of features == hidden_size
         self.gru = nn.GRU(hidden_size, hidden_size, n_layers,
                           dropout=(0 if n_layers == 1 else dropout), bidirectional=True)
-        self.linear = nn.Linear(hidden_size, num_labels * num_classes)
+        self.fc = nn.Linear(hidden_size, num_labels * num_classes)
 
     def forward(self, input_seq, input_lengths, hidden=None):
         # Convert word indexes to embeddings
@@ -30,9 +30,9 @@ class EncoderRNN(nn.Module):
         # Sum bidirectional GRU outputs
         outputs = outputs[:, :, :self.hidden_size] + outputs[:, :, self.hidden_size:]
         outputs = outputs[-1]
-        outputs = self.linear(outputs)
+        outputs = self.fc(outputs)
         outputs = outputs.view((-1, num_classes, num_labels))
         outputs = F.log_softmax(outputs, dim=1)
 
-        # Return output and final hidden state
-        return outputs, hidden
+        # Return output
+        return outputs
