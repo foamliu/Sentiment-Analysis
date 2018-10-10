@@ -24,7 +24,7 @@ def parse_user_reviews(user_reviews):
     samples = []
     for i in range(len(user_reviews)):
         content = user_reviews['content'][i]
-        label_tensor = np.empty((num_classes, num_labels), dtype=np.float32)
+        label_tensor = np.empty((num_classes, num_labels), dtype=np.int32)
         for idx, name in enumerate(label_names):
             sentimental_type = user_reviews[name][i]
             y = map_sentimental_type(sentimental_type)
@@ -43,7 +43,7 @@ def zeroPadding(l, fillvalue=PAD_token):
 def inputVar(indexes_batch):
     lengths = torch.tensor([len(indexes) for indexes in indexes_batch])
     padList = zeroPadding(indexes_batch)
-    padVar = torch.FloatTensor(padList)
+    padVar = torch.LongTensor(padList)
     return padVar, lengths
 
 
