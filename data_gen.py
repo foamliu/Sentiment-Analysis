@@ -58,7 +58,7 @@ def batch2TrainData(pair_batch):
         input_batch.append(pair[0])
         output_batch.append(pair[1])
     inp, lengths = inputVar(input_batch)
-    output = torch.FloatTensor(output_batch)
+    output = torch.LongTensor(output_batch)
     return inp, lengths, output
 
 
