@@ -13,7 +13,7 @@ def train(epoch, train_data, encoder, optimizer):
     encoder.train()
 
     # Loss function
-    criterion = nn.CrossEntropyLoss().to(device)
+    criterion = nn.NLLLoss().to(device)
 
     batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)
@@ -68,7 +68,7 @@ def valid(val_data, encoder):
     encoder.eval()  # eval mode (no dropout or batchnorm)
 
     # Loss function
-    criterion = nn.CrossEntropyLoss().to(device)
+    criterion = nn.NLLLoss().to(device)
 
     batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)

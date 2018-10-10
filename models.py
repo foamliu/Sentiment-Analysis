@@ -31,7 +31,7 @@ class EncoderRNN(nn.Module):
         outputs = outputs[:, :, :self.hidden_size] + outputs[:, :, self.hidden_size:]
         outputs = outputs[-1]
         outputs = self.linear(outputs)
-        outputs = outputs.view((-1, num_classes, num_labels))
+        outputs = outputs.view((-1, num_labels, num_classes))
         outputs = F.softmax(outputs)
 
         # Return output and final hidden state
