@@ -26,4 +26,5 @@ class EncoderRNN(nn.Module):
         # Sum bidirectional GRU outputs
         outputs = outputs[:, :, :self.hidden_size] + outputs[:, :, self.hidden_size:]
         # Return output and final hidden state
+        print('output.size(): ' + str(outputs.size()))
         return outputs, hidden
