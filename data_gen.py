@@ -8,9 +8,9 @@ from torch.utils.data import Dataset
 from utils import *
 
 
-def to_categorical(y, num_classes):
-    """ 1-hot encodes a tensor """
-    return np.eye(num_classes, dtype='uint8')[y]
+# def to_categorical(y, num_classes):
+#     """ 1-hot encodes a tensor """
+#     return np.eye(num_classes, dtype='uint8')[y]
 
 
 # Meaning	    Positive	Neutral	    Negative	Not mentioned
@@ -28,7 +28,9 @@ def parse_user_reviews(user_reviews):
         for idx, name in enumerate(label_names):
             sentimental_type = user_reviews[name][i]
             y = map_sentimental_type(sentimental_type)
-            label_tensor[idx] = to_categorical(y, num_classes)
+            # label_tensor[idx] = to_categorical(y, num_classes)
+            # CrossEntropyLoss does not expect a one-hot encoded vector as the target, but class indices.
+            label_tensor[idx] = y, num_classes
         samples.append({'content': content, 'label_tensor': label_tensor})
     return samples
 
