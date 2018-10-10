@@ -47,11 +47,6 @@ def inputVar(indexes_batch):
     return padVar, lengths
 
 
-# Returns padded target labeling tensor
-def outputVar(labeling_tensor):
-    return torch.FloatTensor(labeling_tensor)
-
-
 # Returns all items for a given batch of pairs
 def batch2TrainData(pair_batch):
     pair_batch.sort(key=lambda x: len(x[0]), reverse=True)
@@ -60,7 +55,7 @@ def batch2TrainData(pair_batch):
         input_batch.append(pair[0])
         output_batch.append(pair[1])
     inp, lengths = inputVar(input_batch)
-    output = torch.LongTensor(output_batch)
+    output = torch.FloatTensor(output_batch)
     return inp, lengths, output
 
 
