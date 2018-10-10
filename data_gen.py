@@ -24,7 +24,7 @@ def parse_user_reviews(user_reviews):
     samples = []
     for i in range(len(user_reviews)):
         content = user_reviews['content'][i]
-        label_tensor = np.empty((num_labels, num_classes))
+        label_tensor = np.empty((num_labels,), dtype=np.int32)
         for idx, name in enumerate(label_names):
             sentimental_type = user_reviews[name][i]
             y = map_sentimental_type(sentimental_type)
