@@ -87,7 +87,7 @@ class SaDataset(Dataset):
             content = self.samples[idx]['content']
             content = content.strip()
             seg_list = jieba.cut(content)
-            input_indexes = encode_text(self.voc, list(seg_list))
+            input_indexes = encode_text(self.voc.word2index, list(seg_list))
             label_tensor = self.samples[idx]['label_tensor']
             pair_batch.append((input_indexes, label_tensor))
 
