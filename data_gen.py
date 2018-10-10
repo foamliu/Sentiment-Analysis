@@ -43,7 +43,7 @@ def zeroPadding(l, fillvalue=PAD_token):
 def inputVar(indexes_batch):
     lengths = torch.tensor([len(indexes) for indexes in indexes_batch])
     padList = zeroPadding(indexes_batch)
-    padVar = torch.LongTensor(padList)
+    padVar = torch.FloatTensor(padList)
     return padVar, lengths
 
 
