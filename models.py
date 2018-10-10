@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from config import num_classes
+from config import num_labels, num_classes
 
 
 class EncoderRNN(nn.Module):
@@ -16,7 +16,7 @@ class EncoderRNN(nn.Module):
         #   because our input size is a word embedding with number of features == hidden_size
         self.gru = nn.GRU(hidden_size, hidden_size, n_layers,
                           dropout=(0 if n_layers == 1 else dropout), bidirectional=True)
-        self.linear = nn.Linear(hidden_size, num_classes)
+        self.linear = nn.Linear(hidden_size, num_labels * num_classes)
 
     def forward(self, input_seq, input_lengths, hidden=None):
         print('input_seq.size(): ' + str(input_seq.size()))
@@ -32,7 +32,9 @@ class EncoderRNN(nn.Module):
         # Sum bidirectional GRU outputs
         outputs = outputs[:, :, :self.hidden_size] + outputs[:, :, self.hidden_size:]
         outputs = outputs[-1]
-        outputs = F.log_softmax(self.linear(outputs), dim=1)
+        outputs = self.linear(outputs)
+        outputs = outputs.view((-1, num_labels, num_classes))
+        outputs = F.softmax(outputs, dim=-1)
 
         # Return output and final hidden state
         print('output.size(): ' + str(outputs.size()))
