@@ -24,11 +24,11 @@ def parse_user_reviews(user_reviews):
     samples = []
     for i in range(len(user_reviews)):
         content = user_reviews['content'][i]
-        label_tensor = np.empty((num_labels,), dtype=np.int32)
+        label_tensor = np.empty((num_classes, num_labels), dtype=np.int32)
         for idx, name in enumerate(label_names):
             sentimental_type = user_reviews[name][i]
             y = map_sentimental_type(sentimental_type)
-            label_tensor[idx] = to_categorical(y, num_classes)
+            label_tensor[:, idx] = to_categorical(y, num_classes)
             # CrossEntropyLoss does not expect a one-hot encoded vector as the target, but class indices.
             # label_tensor[idx] = y
         samples.append({'content': content, 'label_tensor': label_tensor})
