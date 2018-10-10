@@ -78,16 +78,17 @@ def valid(val_data, encoder):
 
     with torch.no_grad():
         # Batches
-        for i_batch, (x, y_true) in enumerate(val_data):
+        for i_batch, (input_variable, lengths, target_variable) in enumerate(val_data):
             # Set device options
-            x = x.to(device)
-            y_true = y_true.to(device)
+            input_variable = input_variable.to(device)
+            lengths = lengths.to(device)
+            target_variable = target_variable.to(device)
 
-            y_pred = encoder(x)
+            encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
 
-            loss = criterion(y_pred, y_true)
+            loss = criterion(encoder_outputs, target_variable)
 
-            acc = accuracy(y_pred, y_true)
+            acc = accuracy(encoder_outputs, target_variable)
             # print('acc: ' + str(acc))
 
             # Keep track of metrics
