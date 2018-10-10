@@ -13,6 +13,9 @@ def to_categorical(y, num_classes):
     return np.eye(num_classes, dtype='uint8')[y]
 
 
+# Meaning	    Positive	Neutral	    Negative	Not mentioned
+# Old labels    1	        0	        -1	        -2
+# New labels    3           2           1           0
 def map_sentimental_type(value):
     return value + 2
 
