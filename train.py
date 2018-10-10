@@ -143,8 +143,8 @@ def main():
         train(epoch, train_data, encoder, optimizer)
 
         # One epoch's validation
-        val_loss = valid(val_data, encoder)
-        print('\n * LOSS - {loss:.3f}\n'.format(loss=val_loss))
+        val_acc, val_loss = valid(val_data, encoder)
+        print('\n * ACCURACY - {acc:.3f}, LOSS - {loss:.3f}\n'.format(acc=val_acc, loss=val_loss))
 
         # Check if there was an improvement
         is_best = val_loss < best_loss
