@@ -19,8 +19,6 @@ class EncoderRNN(nn.Module):
         self.linear = nn.Linear(hidden_size, num_labels * num_classes)
 
     def forward(self, input_seq, input_lengths, hidden=None):
-        print('input_seq.size(): ' + str(input_seq.size()))
-        print('input_lengths.size(): ' + str(input_lengths.size()))
         # Convert word indexes to embeddings
         embedded = self.embedding(input_seq)
         # Pack padded batch of sequences for RNN module
@@ -37,5 +35,4 @@ class EncoderRNN(nn.Module):
         outputs = F.softmax(outputs, dim=-1)
 
         # Return output and final hidden state
-        print('output.size(): ' + str(outputs.size()))
         return outputs, hidden

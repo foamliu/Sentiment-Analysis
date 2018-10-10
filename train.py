@@ -36,6 +36,7 @@ def train(epoch, train_data, encoder, optimizer):
 
         # Forward pass through encoder
         encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
+        print('encoder_outputs.size(): ' + str(encoder_outputs.size()))
 
         loss = criterion(encoder_outputs, target_variable)
         loss.backward()
