@@ -3,10 +3,11 @@ import torch.nn as nn
 
 
 class EncoderRNN(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes, n_layers=1, dropout=0):
+    def __init__(self, input_size, hidden_size, n_layers=1, dropout=0):
         super(EncoderRNN, self).__init__()
         self.n_layers = n_layers
         self.hidden_size = hidden_size
+        self.embedding = nn.Embedding(input_size, hidden_size)
 
         # Initialize GRU; the input_size and hidden_size params are both set to 'hidden_size'
         #   because our input size is a word embedding with number of features == hidden_size

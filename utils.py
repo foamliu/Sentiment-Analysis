@@ -1,3 +1,6 @@
+import json
+import os
+
 from config import *
 
 
@@ -16,3 +19,63 @@ def maskNLLLoss(inp, target, mask):
     loss = crossEntropy.masked_select(mask).mean()
     loss = loss.to(device)
     return loss, nTotal.item()
+
+
+class Lang:
+    def __init__(self, filename):
+        word_map = json.load(open(filename, 'r'))
+        self.word2index = word_map
+        self.index2word = {v: k for k, v in word_map.items()}
+        self.n_words = len(word_map)
+
+
+# Exponentially weighted averages
+class ExpoAverageMeter(object):
+    # Exponential Weighted Average Meter
+    def __init__(self, beta=0.9):
+        self.reset()
+
+    def reset(self):
+        self.beta = 0.9
+        self.val = 0
+        self.avg = 0
+        self.count = 0
+
+    def update(self, val):
+        self.val = val
+        self.avg = self.beta * self.avg + (1 - self.beta) * self.val
+
+
+def adjust_learning_rate(optimizer, shrink_factor):
+    """
+    Shrinks learning rate by a specified factor.
+    :param optimizer: optimizer whose learning rate must be shrunk.
+    :param shrink_factor: factor in interval (0, 1) to multiply learning rate with.
+    """
+
+    print("\nDECAYING learning rate.")
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = param_group['lr'] * shrink_factor
+    print("The new learning rate is %f\n" % (optimizer.param_groups[0]['lr'],))
+
+
+def ensure_folder(folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+
+def save_checkpoint(epoch, encoder, optimizer, val_loss, is_best):
+    ensure_folder(save_folder)
+    state = {'encoder': encoder,
+             'optimizer': optimizer}
+
+    if is_best:
+        filename = '{0}/checkpoint_{1}_{2:.3f}.tar'.format(save_folder, epoch, val_loss)
+        torch.save(state, filename)
+
+        # If this checkpoint is the best so far, store a copy so it doesn't get overwritten by a worse checkpoint
+        torch.save(state, '{}/BEST_checkpoint.tar'.format(save_folder))
+
+
+def accuracy(y_pred, y_true):
+    return 0
