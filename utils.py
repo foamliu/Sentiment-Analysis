@@ -81,7 +81,7 @@ def encode_text(word_map, c):
     return [word_map.get(word, word_map['<unk>']) for word in c] + [word_map['<end>']]
 
 
-def accuracy(scores, targets, k=1):
+def accuracy(scores, targets):
     """
     Computes top-k accuracy, from predicted and true labels.
     :param scores: scores from the model
@@ -90,10 +90,13 @@ def accuracy(scores, targets, k=1):
     :return: top-k accuracy
     """
 
-    _, ind = scores.topk(k, 1, True, True)
+    _, scores_ind = scores.max(dim=1)
+    _, targets_ind = targets.max(dim=1)
+    scores_ind = scores_ind.view(-1, 1)
+    targets_ind = targets_ind.view(-1, 1)
     # print('ind.size(): ' + str(ind.size()))
     # print('targets.view(-1, 1).size(): ' + str(targets.view(-1, 1).size()))
-    ind = ind.view(-1, 1)
-    correct = ind.eq(targets.view(-1, 1).expand_as(ind))
+
+    correct = scores_ind.eq(targets_ind)
     correct_total = correct.view(-1).float().sum()  # 0D tensor
     return correct_total.item() * (100.0 / chunk_size / num_labels)
