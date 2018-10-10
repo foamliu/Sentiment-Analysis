@@ -90,11 +90,10 @@ def accuracy(scores, targets, k=1):
     :return: top-k accuracy
     """
 
-    batch_size = targets.size(0)
     _, ind = scores.topk(k, 1, True, True)
-    print('ind.size(): ' + str(ind.size()))
-    print('targets.view(-1, 1).size(): ' + str(targets.view(-1, 1).size()))
+    # print('ind.size(): ' + str(ind.size()))
+    # print('targets.view(-1, 1).size(): ' + str(targets.view(-1, 1).size()))
     ind = ind.view(-1, 1)
     correct = ind.eq(targets.view(-1, 1).expand_as(ind))
     correct_total = correct.view(-1).float().sum()  # 0D tensor
-    return correct_total.item() * (100.0 / batch_size)
+    return correct_total.item() * (100.0 / chunk_size / num_labels)
