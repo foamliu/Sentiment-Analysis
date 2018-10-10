@@ -2,9 +2,22 @@ import json
 import os
 from collections import Counter
 
+import pandas as pd
 from tqdm import tqdm
 
 from config import *
+
+
+def extract(split):
+    if split == 'train':
+        filename = os.path.join(train_folder, train_filename)
+    elif split == 'valid':
+        filename = os.path.join(valid_folder, valid_filename)
+    else:
+        filename = os.path.join(test_a_folder, test_a_filename)
+
+    user_reviews = pd.read_csv(filename)
+    print(user_reviews)
 
 
 def build_wordmap():
@@ -34,4 +47,7 @@ def build_wordmap():
 
 
 if __name__ == '__main__':
+    extract('train')
+    extract('valid')
+
     build_wordmap()
