@@ -58,7 +58,7 @@ def train(epoch, train_data, encoder, optimizer):
             print('Epoch: [{0}][{1}/{2}]\t'
                   'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i_batch, len(train_loader),
+                  'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i_batch, len(train_data),
                                                                     batch_time=batch_time,
                                                                     loss=losses,
                                                                     accs=accs))
@@ -102,7 +102,7 @@ def valid(val_data, encoder):
                 print('Validation: [{0}/{1}]\t'
                       'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                       'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                      'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(i_batch, len(val_loader),
+                      'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(i_batch, len(val_data),
                                                                         batch_time=batch_time,
                                                                         loss=losses,
                                                                         accs=accs))
