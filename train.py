@@ -1,5 +1,6 @@
 import time
 
+import numpy as np
 from torch import nn
 from torch import optim
 
@@ -158,6 +159,10 @@ def main():
 
         # Save checkpoint
         save_checkpoint(epoch, encoder, optimizer, val_acc, is_best)
+
+        # Reshuffle samples
+        np.random.shuffle(train_data.samples)
+        np.random.shuffle(val_data.samples)
 
 
 if __name__ == '__main__':
