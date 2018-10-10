@@ -18,29 +18,6 @@ def parse_user_reviews(split):
         filename = os.path.join(test_a_folder, test_a_filename)
 
     user_reviews = pd.read_csv(filename)
-    id = user_reviews['id']
-    content = user_reviews['content']
-    location_traffic_convenience = user_reviews['location_traffic_convenience']
-    location_distance_from_business_district = user_reviews['location_distance_from_business_district']
-    location_easy_to_find = user_reviews['location_easy_to_find']
-    service_wait_time = user_reviews['service_wait_time']
-    service_waiters_attitude = user_reviews['service_waiters_attitude']
-    service_parking_convenience = user_reviews['service_parking_convenience']
-    service_serving_speed = user_reviews['service_serving_speed']
-    price_level = user_reviews['price_level']
-    price_cost_effective = user_reviews['price_cost_effective']
-    price_discount = user_reviews['price_discount']
-    environment_decoration = user_reviews['environment_decoration']
-    environment_noise = user_reviews['environment_noise']
-    environment_space = user_reviews['environment_space']
-    environment_cleaness = user_reviews['environment_cleaness']
-    dish_portion = user_reviews['dish_portion']
-    dish_taste = user_reviews['dish_taste']
-    dish_look = user_reviews['dish_look']
-    dish_recommendation = user_reviews['dish_recommendation']
-    others_overall_experience = user_reviews['others_overall_experience']
-    others_willing_to_consume_again = user_reviews['others_willing_to_consume_again']
-
     return user_reviews
 
 

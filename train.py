@@ -2,14 +2,13 @@ import time
 
 from torch import nn
 from torch import optim
-from torch.utils.data import DataLoader
 
 from data_gen import SaDataset
 from models import EncoderRNN
 from utils import *
 
 
-def train(epoch, train_loader, encoder, optimizer):
+def train(epoch, train_data, encoder, optimizer):
     # Ensure dropout layers are in train mode
     encoder.train()
 
@@ -23,22 +22,24 @@ def train(epoch, train_loader, encoder, optimizer):
     start = time.time()
 
     # Batches
-    for i_batch, (x, y_true) in enumerate(train_loader):
+    for i_batch, (input_variable, lengths, target_variable) in enumerate(train_data):
         # Zero gradients
         optimizer.zero_grad()
 
         # Set device options
-        x = x.to(device)
-        y_true = y_true.to(device)
+        input_variable = input_variable.to(device)
+        lengths = lengths.to(device)
+        target_variable = target_variable.to(device)
 
-        y_pred = encoder(x)
+        # Forward pass through encoder
+        encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
 
-        loss = criterion(y_pred, y_true)
+        loss = criterion(encoder_outputs, target_variable)
         loss.backward()
 
         optimizer.step()
 
-        acc = accuracy(y_pred, y_true)
+        acc = accuracy(encoder_outputs, target_variable)
         # print('acc: ' + str(acc))
 
         # Keep track of metrics
@@ -59,7 +60,7 @@ def train(epoch, train_loader, encoder, optimizer):
                                                                     accs=accs))
 
 
-def valid(val_loader, encoder):
+def valid(val_data, encoder):
     encoder.eval()  # eval mode (no dropout or batchnorm)
 
     # Loss function
@@ -73,7 +74,7 @@ def valid(val_loader, encoder):
 
     with torch.no_grad():
         # Batches
-        for i_batch, (x, y_true) in enumerate(val_loader):
+        for i_batch, (x, y_true) in enumerate(val_data):
             # Set device options
             x = x.to(device)
             y_true = y_true.to(device)
@@ -109,10 +110,8 @@ def main():
     voc = Lang('data/WORDMAP.json')
     print("voc.n_words: " + str(voc.n_words))
 
-    train_loader = DataLoader(dataset=SaDataset('train'), batch_size=batch_size, shuffle=True,
-                              pin_memory=True, drop_last=True)
-    val_loader = DataLoader(dataset=SaDataset('valid'), batch_size=batch_size, pin_memory=True,
-                            drop_last=True)
+    train_data = SaDataset('train', voc)
+    val_data = SaDataset('valid', voc)
 
     # Initialize encoder
     encoder = EncoderRNN(voc.n_words, hidden_size, encoder_n_layers, dropout)
@@ -136,10 +135,10 @@ def main():
             adjust_learning_rate(optimizer, 0.8)
 
         # One epoch's training
-        train(epoch, train_loader, encoder, optimizer)
+        train(epoch, train_data, encoder, optimizer)
 
         # One epoch's validation
-        val_loss = valid(val_loader, encoder)
+        val_loss = valid(val_data, encoder)
         print('\n * LOSS - {loss:.3f}\n'.format(loss=val_loss))
 
         # Check if there was an improvement

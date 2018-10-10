@@ -77,5 +77,9 @@ def save_checkpoint(epoch, encoder, optimizer, val_loss, is_best):
         torch.save(state, '{}/BEST_checkpoint.tar'.format(save_folder))
 
 
+def encode_text(word_map, c):
+    return [word_map.get(word, word_map['<unk>']) for word in c] + [word_map['<end>']]
+
+
 def accuracy(y_pred, y_true):
     return 0

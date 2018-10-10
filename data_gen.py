@@ -1,14 +1,68 @@
-import os
+import itertools
 
+import jieba
+import numpy as np
 import pandas as pd
 from torch.utils.data import Dataset
 
 from utils import *
 
 
+def to_categorical(y, num_classes):
+    """ 1-hot encodes a tensor """
+    return np.eye(num_classes, dtype='uint8')[y]
+
+
+def map_sentimental_type(value):
+    return value + 2
+
+
+def parse_user_reviews(user_reviews):
+    samples = []
+    for i in range(len(user_reviews)):
+        content = user_reviews['content'][i]
+        label_tensor = np.empty((num_labels, num_classes))
+        for idx, name in enumerate(label_names):
+            sentimental_type = user_reviews[name][i]
+            y = map_sentimental_type(sentimental_type)
+            label_tensor[idx] = to_categorical(y, num_classes)
+        samples.append({'content': content, 'label_tensor': label_tensor})
+    return samples
+
+
+def zeroPadding(l, fillvalue=PAD_token):
+    return list(itertools.zip_longest(*l, fillvalue=fillvalue))
+
+
+# Returns padded input sequence tensor and lengths
+def inputVar(indexes_batch):
+    lengths = torch.tensor([len(indexes) for indexes in indexes_batch])
+    padList = zeroPadding(indexes_batch)
+    padVar = torch.LongTensor(padList)
+    return padVar, lengths
+
+
+# Returns padded target labeling tensor
+def outputVar(labeling_tensor):
+    return torch.FloatTensor(labeling_tensor)
+
+
+# Returns all items for a given batch of pairs
+def batch2TrainData(pair_batch):
+    pair_batch.sort(key=lambda x: len(x[0]), reverse=True)
+    input_batch, output_batch = [], []
+    for pair in pair_batch:
+        input_batch.append(pair[0])
+        output_batch.append(pair[1])
+    inp, lengths = inputVar(input_batch)
+    output = torch.FloatTensor(output_batch)
+    return inp, lengths, output
+
+
 class SaDataset(Dataset):
-    def __init__(self, split):
+    def __init__(self, split, voc):
         self.split = split
+        self.voc = voc
         assert self.split in {'train', 'valid'}
 
         if split == 'train':
@@ -19,12 +73,22 @@ class SaDataset(Dataset):
             filename = os.path.join(test_a_folder, test_a_filename)
 
         user_reviews = pd.read_csv(filename)
-        self.samples = user_reviews['content']
+        self.samples = parse_user_reviews(user_reviews)
+        self.num_chunks = len(self.samples) // chunk_size
 
     def __getitem__(self, i):
-        content = self.samples[i]
+        pair_batch = []
 
-        return content
+        for i_chunk in range(chunk_size):
+            idx = i * chunk_size + i_chunk
+            content = self.samples[idx]['content']
+            content = content.strip()
+            seg_list = jieba.cut(content)
+            input_indexes = encode_text(self.voc, list(seg_list))
+            label_tensor = self.samples[idx]['label_tensor']
+            pair_batch.append((input_indexes, label_tensor))
+
+        return batch2TrainData(pair_batch)
 
     def __len__(self):
-        return len(self.samples)
+        return self.num_chunks
