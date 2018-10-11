@@ -1,6 +1,8 @@
 import json
 import os
 
+import pandas as pd
+
 from config import *
 
 
@@ -87,3 +89,15 @@ def accuracy(scores, targets):
     correct = scores_ind.eq(targets_ind)
     correct_total = correct.view(-1).float().sum()  # 0D tensor
     return correct_total.item() * (100.0 / chunk_size / num_labels)
+
+
+def parse_user_reviews(split):
+    if split == 'train':
+        filename = os.path.join(train_folder, train_filename)
+    elif split == 'valid':
+        filename = os.path.join(valid_folder, valid_filename)
+    else:
+        filename = os.path.join(test_a_folder, test_a_filename)
+
+    user_reviews = pd.read_csv(filename)
+    return user_reviews
