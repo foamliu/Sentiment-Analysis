@@ -14,7 +14,7 @@ def train(epoch, train_data, encoder, optimizer):
     # Loss function
     criterion = nn.CrossEntropyLoss().to(device)
 
-    batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
+    batch_time = AverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)
     accs = ExpoAverageMeter()  # accuracy
 
@@ -72,9 +72,9 @@ def valid(val_data, encoder):
     # Loss function
     criterion = nn.CrossEntropyLoss().to(device)
 
-    batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
-    losses = ExpoAverageMeter()  # loss (per word decoded)
-    accs = ExpoAverageMeter()  # accuracy
+    batch_time = AverageMeter()  # forward prop. + back prop. time
+    losses = AverageMeter()  # loss (per word decoded)
+    accs = AverageMeter()  # accuracy
 
     start = time.time()
 
