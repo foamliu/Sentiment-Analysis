@@ -50,8 +50,6 @@ def train(epoch, train_data, encoder, optimizer):
 
         optimizer.step()
 
-        # print('acc: ' + str(acc))
-
         # Keep track of metrics
         losses.update(loss.item())
         batch_time.update(time.time() - start)
@@ -93,12 +91,11 @@ def valid(val_data, encoder):
             outputs = encoder(input_variable, lengths)
 
             loss = 0
+            acc = 0
 
             for idx, _ in enumerate(label_names):
-                loss = criterion(outputs[:, :, idx], target_variable[:, idx])
-
-            acc = accuracy(outputs, target_variable)
-            # print('acc: ' + str(acc))
+                loss += criterion(outputs[:, :, idx], target_variable[:, idx]) / len(label_names)
+                acc += accuracy(outputs[:, :, idx], target_variable[:, idx]) / len(label_names)
 
             # Keep track of metrics
             losses.update(loss.item())
