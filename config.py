@@ -3,7 +3,7 @@ import torch
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Configure training/optimization
-learning_rate = 0.0001
+learning_rate = 0.002
 min_word_freq = 3
 print_every = 100
 chunk_size = 100
@@ -17,6 +17,7 @@ epochs = 120
 hidden_size = 500
 encoder_n_layers = 2
 dropout = 0.05
+batch_first = False
 
 train_folder = 'data/ai_challenger_sentiment_analysis_trainingset_20180816'
 valid_folder = 'data/ai_challenger_sentiment_analysis_validationset_20180816'

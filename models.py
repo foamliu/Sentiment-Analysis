@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 
-from config import num_labels, num_classes
+from config import num_labels, num_classes, batch_first
 
 
 class EncoderRNN(nn.Module):
@@ -32,7 +33,17 @@ class EncoderRNN(nn.Module):
         # Sum bidirectional GRU outputs
         outputs = outputs[:, :, :self.hidden_size] + outputs[:, :, self.hidden_size:]
         # outputs = [sent len, batch size, hidden size]
-        outputs = outputs[-1]
+        # outputs = outputs[-1]
+
+        # Extract the outputs for the last timestep of each example
+        idx = (torch.LongTensor(input_lengths) - 1).view(-1, 1).expand(
+            len(input_lengths), outputs.size(2))
+        time_dimension = 1 if batch_first else 0
+        idx = idx.unsqueeze(time_dimension)
+        # Shape: (batch_size, rnn_hidden_dim)
+        outputs = outputs.gather(
+            time_dimension, Variable(idx)).squeeze(time_dimension)
+
         # outputs = [batch size, hidden size]
         outputs = self.fc(outputs)
         # outputs = [batch size, num_labels * num_classes]
