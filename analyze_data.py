@@ -13,7 +13,7 @@ def analyze(contents):
         # Update word frequency
         sent_lengths.append(len(seg_list))
 
-    num_bins = 5
+    num_bins = 100
     n, bins, patches = plt.hist(sent_lengths, num_bins, facecolor='blue', alpha=0.5)
     plt.show()
 
