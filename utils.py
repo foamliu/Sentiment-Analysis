@@ -55,13 +55,13 @@ def ensure_folder(folder):
         os.makedirs(folder)
 
 
-def save_checkpoint(epoch, encoder, optimizer, val_loss, is_best):
+def save_checkpoint(epoch, encoder, optimizer, val_acc, is_best):
     ensure_folder(save_folder)
     state = {'encoder': encoder,
              'optimizer': optimizer}
 
     if is_best:
-        filename = '{0}/checkpoint_{1}_{2:.3f}.tar'.format(save_folder, epoch, val_loss)
+        filename = '{0}/checkpoint_{1}_{2:.3f}.tar'.format(save_folder, epoch, val_acc)
         torch.save(state, filename)
 
         # If this checkpoint is the best so far, store a copy so it doesn't get overwritten by a worse checkpoint
