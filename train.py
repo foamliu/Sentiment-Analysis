@@ -14,7 +14,7 @@ def train(epoch, train_data, encoder, optimizer):
     encoder.train()
 
     # Loss function
-    criterion = nn.MSELoss().to(device)
+    criterion = nn.CrossEntropyLoss().to(device)
 
     batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)
@@ -39,12 +39,17 @@ def train(epoch, train_data, encoder, optimizer):
         outputs = encoder(input_variable, lengths)
         # print('outputs.size(): ' + str(outputs.size()))
 
-        loss = criterion(outputs, target_variable)
+        loss = 0
+        acc = 0
+
+        for idx, _ in enumerate(label_names):
+            loss += criterion(outputs[:, :, idx], target_variable[:, idx]) / len(label_names)
+            acc += accuracy(outputs[:, :, idx], target_variable[:, idx]) / len(label_names)
+
         loss.backward()
 
         optimizer.step()
 
-        acc = accuracy(outputs, target_variable)
         # print('acc: ' + str(acc))
 
         # Keep track of metrics
@@ -69,7 +74,7 @@ def valid(val_data, encoder):
     encoder.eval()  # eval mode (no dropout or batchnorm)
 
     # Loss function
-    criterion = nn.MSELoss().to(device)
+    criterion = nn.CrossEntropyLoss().to(device)
 
     batch_time = ExpoAverageMeter()  # forward prop. + back prop. time
     losses = ExpoAverageMeter()  # loss (per word decoded)
@@ -87,7 +92,10 @@ def valid(val_data, encoder):
 
             outputs = encoder(input_variable, lengths)
 
-            loss = criterion(outputs, target_variable)
+            loss = 0
+
+            for idx, _ in enumerate(label_names):
+                loss = criterion(outputs[:, :, idx], target_variable[:, idx])
 
             acc = accuracy(outputs, target_variable)
             # print('acc: ' + str(acc))

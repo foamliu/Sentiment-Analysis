@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
-from config import num_labels
+from config import num_labels, num_classes
 
 
 class EncoderRNN(nn.Module):
@@ -15,7 +16,7 @@ class EncoderRNN(nn.Module):
         #   because our input size is a word embedding with number of features == hidden_size
         self.gru = nn.GRU(hidden_size, hidden_size, n_layers,
                           dropout=(0 if n_layers == 1 else dropout), bidirectional=True)
-        self.fc = nn.Linear(hidden_size, num_labels)
+        self.fc = nn.Linear(hidden_size, num_labels * num_classes)
 
     def forward(self, input_seq, input_lengths, hidden=None):
         # input_seq = [sent len, batch size]
@@ -34,7 +35,11 @@ class EncoderRNN(nn.Module):
         outputs = outputs[-1]
         # outputs = [batch size, hidden size]
         outputs = self.fc(outputs)
-        # outputs = [batch size, num_labels]
+        # outputs = [batch size, num_labels * num_classes]
+        outputs = outputs.view((-1, num_classes, num_labels))
+        # outputs = [batch size, num_classes, num_labels]
+        outputs = F.log_softmax(outputs, dim=1)
+        # outputs = [batch size, num_classes, num_labels]
 
         # Return output
         return outputs
