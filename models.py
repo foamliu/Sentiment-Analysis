@@ -36,7 +36,7 @@ class EncoderRNN(nn.Module):
         # outputs = outputs[-1]
 
         # Extract the outputs for the last timestep of each example
-        idx = (torch.LongTensor(input_lengths) - 1).view(-1, 1).expand(
+        idx = (input_lengths - 1).view(-1, 1).expand(
             len(input_lengths), outputs.size(2))
         time_dimension = 1 if batch_first else 0
         idx = idx.unsqueeze(time_dimension)
