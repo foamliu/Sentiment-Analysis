@@ -1,5 +1,7 @@
+import datetime
 import json
 import os
+import time
 
 import pandas as pd
 
@@ -89,3 +91,7 @@ def parse_user_reviews(split):
 
     user_reviews = pd.read_csv(filename)
     return user_reviews
+
+
+def timestamp():
+    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
