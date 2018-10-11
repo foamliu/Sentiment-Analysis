@@ -70,7 +70,7 @@ def encode_text(word_map, c):
     return [word_map.get(word, word_map['<unk>']) for word in c] + [word_map['<end>']]
 
 
-def accuracy(scores, targets):
+def accuracy(scores, targets, k=1):
     batch_size = targets.size(0)
     _, ind = scores.topk(k, 1, True, True)
     correct = ind.eq(targets.view(-1, 1).expand_as(ind))
