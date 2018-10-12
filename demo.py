@@ -58,4 +58,4 @@ if __name__ == '__main__':
         result[i]['labels'] = (outputs[i] - 2).tolist()
 
     with open('result.json', 'w') as file:
-        json.dump(result, file, indent=4)
+        json.dump(result, file, indent=4, ensure_ascii=False)
