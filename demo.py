@@ -43,5 +43,7 @@ if __name__ == '__main__':
 
     test_data = batch2TrainData(pair_batch)
     input_variable, lengths, _ = test_data
+    input_variable = input_variable.to(device)
+    lengths = lengths.to(device)
     outputs = encoder(input_variable, lengths)
     print('outputs.size(): ' + str(outputs.size()))
