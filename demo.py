@@ -1,11 +1,14 @@
 # import the necessary packages
+import os
 import random
 
 import jieba
 import pandas as pd
+import torch
 
+from config import device, save_folder, test_a_folder, test_a_filename
 from data_gen import parse_user_reviews, batch2TrainData
-from utils import *
+from utils import Lang, encode_text
 
 if __name__ == '__main__':
     voc = Lang('data/WORDMAP.json')
@@ -24,6 +27,8 @@ if __name__ == '__main__':
     # Set dropout layers to eval mode
     encoder.eval()
 
+    filename = os.path.join(test_a_folder, test_a_filename)
+    user_reviews = pd.read_csv(filename)
     samples = parse_user_reviews('test_a')
 
     samples = random.sample(samples, 10)

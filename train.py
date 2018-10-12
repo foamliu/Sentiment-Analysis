@@ -1,10 +1,15 @@
+import time
+
 import numpy as np
+import torch
 from torch import nn
 from torch import optim
 
+from config import device, label_names, print_every, hidden_size, encoder_n_layers, dropout, learning_rate, start_epoch, \
+    epochs
 from data_gen import SaDataset
 from models import EncoderRNN
-from utils import *
+from utils import AverageMeter, ExpoAverageMeter, accuracy, Lang, timestamp, adjust_learning_rate, save_checkpoint
 
 
 def train(epoch, train_data, encoder, optimizer):
