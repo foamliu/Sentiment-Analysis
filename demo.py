@@ -35,6 +35,7 @@ if __name__ == '__main__':
     pair_batch = []
     for i, sample in enumerate(samples):
         content = sample['content']
+        print(content)
         content = content.strip()
         seg_list = jieba.cut(content)
         input_indexes = encode_text(voc.word2index, list(seg_list))
@@ -46,4 +47,6 @@ if __name__ == '__main__':
     input_variable = input_variable.to(device)
     lengths = lengths.to(device)
     outputs = encoder(input_variable, lengths)
+    _, outputs = torch.max(outputs, 1)
     print('outputs.size(): ' + str(outputs.size()))
+    print(outputs.item())
