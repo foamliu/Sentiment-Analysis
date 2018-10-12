@@ -1,4 +1,5 @@
 # import the necessary packages
+import json
 import os
 import random
 
@@ -33,9 +34,11 @@ if __name__ == '__main__':
 
     samples = random.sample(samples, 10)
     pair_batch = []
+    result = []
     for i, sample in enumerate(samples):
         content = sample['content']
-        print(content)
+        # print(content)
+        result.append({'content': content})
         content = content.strip()
         seg_list = jieba.cut(content)
         input_indexes = encode_text(voc.word2index, list(seg_list))
@@ -49,4 +52,10 @@ if __name__ == '__main__':
     outputs = encoder(input_variable, lengths)
     _, outputs = torch.max(outputs, 1)
     print('outputs.size(): ' + str(outputs.size()))
-    print(outputs.cpu().numpy())
+    outputs = outputs.cpu().numpy()
+
+    for i in range(10):
+        result[i]['labels'] = outputs[i]
+
+    with open('result.json', 'w') as file:
+        json.dump(file, result)
