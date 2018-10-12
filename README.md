@@ -32,7 +32,7 @@
 ### 数据预处理
 提取训练和验证样本：
 ```bash
-$ extract.py
+$ python extract.py
 $ python pre-process.py
 ```
 
