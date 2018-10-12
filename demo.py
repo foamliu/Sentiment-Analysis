@@ -55,7 +55,7 @@ if __name__ == '__main__':
     outputs = outputs.cpu().numpy()
 
     for i in range(10):
-        result[i]['labels'] = outputs[i]
+        result[i]['labels'] = outputs[i].tolist()
 
     with open('result.json', 'w') as file:
         json.dump(result, file, indent=4)
