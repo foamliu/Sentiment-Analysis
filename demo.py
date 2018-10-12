@@ -49,4 +49,4 @@ if __name__ == '__main__':
     outputs = encoder(input_variable, lengths)
     _, outputs = torch.max(outputs, 1)
     print('outputs.size(): ' + str(outputs.size()))
-    print(outputs.item())
+    print(outputs.cpu().numpy())
