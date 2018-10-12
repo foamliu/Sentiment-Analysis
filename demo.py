@@ -24,9 +24,7 @@ if __name__ == '__main__':
     # Set dropout layers to eval mode
     encoder.eval()
 
-    filename = os.path.join(test_a_folder, test_a_filename)
-    user_reviews = pd.read_csv(filename)
-    samples = parse_user_reviews(user_reviews)
+    samples = parse_user_reviews('test_a')
 
     samples = random.sample(samples, 10)
     pair_batch = []
